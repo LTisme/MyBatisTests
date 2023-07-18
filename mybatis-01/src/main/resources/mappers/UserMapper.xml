@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--命名空间就是为了防止重复用的，你可以使用自定义的命名，也可以使用某个接口的全限定名称-->
+<!--<mapper namespace="user">-->
+<mapper namespace="org.example.mapper.UserMapper">
+    <!--    <select id="select" resultType="org.example.entity.User">-->
+    <select id="selectAll" resultType="org.example.entity.User">
+        select * from user
+    </select>
+
+    <!--  MyBatis中， #{} 代表占位符（推荐使用，但比如模糊查询之类的场景则需要用${}了）-->
+    <!--  MyBatis中， ${} 作用是直接进行字符串替换-->
+    <select id="selectOne" resultType="org.example.entity.User">
+        select * from user where id = #{id}
+    </select>
+
+    <select id="select" resultType="org.example.entity.User">
+        select * from user where username = #{username} and password = #{password}
+    </select>
+
+    <select id="selectByUser" resultType="org.example.entity.User">
+        select * from user where username = #{username} and password = #{password}
+    </select>
+
+    <select id="selectByMap" resultType="org.example.entity.User">
+        select * from user where username = #{username} and password = #{password}
+    </select>
+
+    <select id="selectByUsername" resultType="org.example.entity.User">
+        <!--如果你用下面的这个语句，则会和mysql中的关键字冲突，导致直接把你mysql的用户名传进去，所以最好不要重复或者使用驼峰命名法-->
+        <!--select * from user where username like '%${username}%'-->
+        select * from user where username like '%${UserName}%'
+    </select>
+
+    <insert id="insert" parameterType="org.example.entity.User">
+        insert into user(id, username, password) values(#{id}, #{username}, #{password})
+    </insert>
+
+    <update id="update" parameterType="org.example.entity.User">
+        update user set username=#{username}, password=#{password} where id = #{id}
+    </update>
+
+    <delete id="delete">
+        delete from user where id = #{id}
+    </delete>
+</mapper>

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.example</groupId>
+    <artifactId>MyBatisTests</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>mybatis-01</module>
+    </modules>
+    <!--  这是父工程，所以要将它的打包方式定为pom  -->
+    <packaging>pom</packaging>
+
+    <properties>
+        <!-- Java 编译器版本-->
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <!--maven编译插件-->
+        <maven.compiler-plugins.version>3.1</maven.compiler-plugins.version>
+
+        <!--字符集编码-->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!--junit版本-->
+        <junit.version>4.13.2</junit.version>
+        <!--mybatis版本-->
+        <mybatis.version>3.5.7</mybatis.version>
+        <!--mysql版本-->
+        <mysql-connector-java.version>8.0.33</mysql-connector-java.version>
+        <!--Lombok版本-->
+        <lombok.version>1.18.22</lombok.version>
+        <!--logback版本-->
+        <logback.version>1.4.5</logback.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- 单元测试 -->
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <!-- mybatis 核心，去官网就能看到，使用mybatis就应该配置这个 -->
+            <dependency>
+                <groupId>org.mybatis</groupId>
+                <artifactId>mybatis</artifactId>
+                <version>${mybatis.version}</version>
+            </dependency>
+            <!-- 数据库驱动 -->
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql-connector-java.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${logback.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!--构建-->
+    <build>
+        <!--定义了编译、打包、部署的项目名称，默认情况为${artifactId}-${version}-->
+        <finalName>${pom.artifactId}</finalName>
+        <!--标注资源文件目录-->
+        <resources>
+            <resource>
+                <!--说明目录路径，我这里只想将资源放在resources文件夹内-->
+                <directory>src/main/resources</directory>
+                <includes>
+                    <!--任意文件夹层级里以.properties的文件都可以用-->
+                    <include>**/*.properties</include>
+                    <include>**/*.xml</include>
+                </includes>
+            </resource>
+        </resources>
+
+        <!--必须要用的插件，比如maven的编译插件-->
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler-plugins.version}</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source> <!-- 源代码使用的JDK版本 -->
+                    <target>${maven.compiler.target}</target> <!-- 需要生成的目标class文件的编译版本 -->
+                    <encoding>${project.build.sourceEncoding}</encoding><!-- 字符集编码 -->
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <!--profiles一般用于多环境，比如开发、测试、生产等，当然，单环境也可以先加上，日后就可以少改动-->
+    <profiles>
+        <profile>
+            <id>Alibaba</id>
+            <repositories>
+                <repository>
+                    <!--仓库 id，repositories 可以配置多个仓库，保证 id 不重复-->
+                    <id>aliyunmaven</id>
+                    <!--仓库地址，当然可以配私有仓库地址-->
+                    <url>https://maven.aliyun.com/repository/public</url>
+                    <!--是否下载 releases 版本-->
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <!--是否下载 snapshot 版本-->
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </repository>
+            </repositories>
+        </profile>
+    </profiles>
+</project>

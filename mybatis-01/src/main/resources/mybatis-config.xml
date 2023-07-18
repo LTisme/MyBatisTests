@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <properties>
+        <property name="driver" value="com.mysql.cj.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/ssm"/>
+        <property name="username" value="root"/>
+        <property name="password" value="Ts51102186"/>
+    </properties>
+
+    <!--通过查看https://mybatis.org/dtd/mybatis-3-config.dtd文件，知道Alias别名要放在properties和settings后面-->
+    <typeAliases>
+        <!--别名系统，可以通过别名拿到具体的，用全限定名标识出的类（源码里你会发现别名是key，value是类）-->
+        <typeAlias type="org.example.entity.User" alias="user"/>
+        <!--如果包下面的类非常多，用别名非常麻烦的话，则可以直接用package配置-->
+        <package name="org.example.entity"/>
+    </typeAliases>
+
+    <!--环境，也叫数据源-->
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="${driver}"/>
+                <property name="url" value="${url}"/>
+                <property name="username" value="${username}"/>
+                <property name="password" value="${password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+    <mappers>
+        <mapper resource="mappers/UserMapper.xml"/>
+        <mapper class="org.example.mapper.AdminMapper"/>
+    </mappers>
+</configuration>
