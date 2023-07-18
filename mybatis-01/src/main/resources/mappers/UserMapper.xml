@@ -5,30 +5,41 @@
 <!--命名空间就是为了防止重复用的，你可以使用自定义的命名，也可以使用某个接口的全限定名称-->
 <!--<mapper namespace="user">-->
 <mapper namespace="org.example.mapper.UserMapper">
+
+    <!--如果将sql的列名从username改成user_name就会导致查询不到，而改的话代码每一处都得修改别名，但是用resultMap映射结果集就只用改一次就行了-->
+    <!--但是需要注意，需要把下面的各个resultType改成resultMap=resultMap的id-->
+    <resultMap id="UserResultMap" type="org.example.entity.User">
+        <id column="id" property="id"/>
+        <!--这里就是做了别名映射，让sql里的列名与java中的别名对应映射起来-->
+        <result column="user_name" property="username"/>
+        <result column="password" property="password"/>
+    </resultMap>
+
+
     <!--    <select id="select" resultType="org.example.entity.User">-->
-    <select id="selectAll" resultType="org.example.entity.User">
+    <select id="selectAll" resultMap="UserResultMap">
         select * from user
     </select>
 
     <!--  MyBatis中， #{} 代表占位符（推荐使用，但比如模糊查询之类的场景则需要用${}了）-->
     <!--  MyBatis中， ${} 作用是直接进行字符串替换-->
-    <select id="selectOne" resultType="org.example.entity.User">
+    <select id="selectOne" resultMap="UserResultMap">
         select * from user where id = #{id}
     </select>
 
-    <select id="select" resultType="org.example.entity.User">
+    <select id="select" resultMap="UserResultMap">
         select * from user where username = #{username} and password = #{password}
     </select>
 
-    <select id="selectByUser" resultType="org.example.entity.User">
+    <select id="selectByUser" resultMap="UserResultMap">
         select * from user where username = #{username} and password = #{password}
     </select>
 
-    <select id="selectByMap" resultType="org.example.entity.User">
+    <select id="selectByMap" resultMap="UserResultMap">
         select * from user where username = #{username} and password = #{password}
     </select>
 
-    <select id="selectByUsername" resultType="org.example.entity.User">
+    <select id="selectByUsername" resultMap="UserResultMap">
         <!--如果你用下面的这个语句，则会和mysql中的关键字冲突，导致直接把你mysql的用户名传进去，所以最好不要重复或者使用驼峰命名法-->
         <!--select * from user where username like '%${username}%'-->
         select * from user where username like '%${UserName}%'
