@@ -19,7 +19,7 @@ public class User {
 
     private static final Long serialVersionUID = 1L;
 
-    private int id;
+    private Integer id;
     private String username;
     private String password;
 }

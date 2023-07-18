@@ -83,7 +83,8 @@ public class TestMyBatis {
     @Test
     public void testMapperFindByUser() {
         try(SqlSession session = sqlSessionFactory.openSession()){
-            User user1 = new User(1, "xiaozhang", "123456");
+//            User user1 = new User(1, "xiaozhang", "123456");
+            User user1 = new User(null, "xiaozhang", "123456");
             UserMapper mapper = session.getMapper(UserMapper.class);
             User user = mapper.selectByUser(user1);
             log.debug("user is [{}]", user);

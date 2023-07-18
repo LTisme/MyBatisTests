@@ -15,7 +15,6 @@
         <result column="password" property="password"/>
     </resultMap>
 
-
     <!--    <select id="select" resultType="org.example.entity.User">-->
     <select id="selectAll" resultMap="UserResultMap">
         select * from user
@@ -31,8 +30,24 @@
         select * from user where username = #{username} and password = #{password}
     </select>
 
+    <!--    <select id="selectByUser" resultMap="UserResultMap">-->
+    <!--        select * from user where username = #{username} and password = #{password}-->
+    <!--    </select>-->
+
+    <!--这就是动态SQL，能根据前端传过来的参数来生成相应的sql的语句-->
     <select id="selectByUser" resultMap="UserResultMap">
-        select * from user where username = #{username} and password = #{password}
+        select id, user_name, password from user <!--这是一个取巧的办法-->
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="username != null and username != ''">
+                and user_name = #{username}
+            </if>
+            <if test="password != null and password != ''">
+                and password = #{password}
+            </if>
+        </where>
     </select>
 
     <select id="selectByMap" resultMap="UserResultMap">
