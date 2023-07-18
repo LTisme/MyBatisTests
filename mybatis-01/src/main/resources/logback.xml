@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <property name="pattern" value="%d{yyyy-MM-dd HH:mm:ss} %c [%thread] %-5level %msg%n"/>
+    <property name="log_dir" value="d:/logs"/>
+
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <target>System.out</target>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${pattern}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="file" class="ch.qos.logback.core.FileAppender">
+        <!--日志格式配置-->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${pattern}</pattern>
+        </encoder>
+        <!--日志输出路径-->
+        <file>${log_dir}/sql.log</file>
+    </appender>
+
+    <root level="ALL">
+        <appender-ref ref="console"/>
+    </root>
+
+    <!--这一行就是去除重复性的输出-->
+    <logger name="mybatis.sql" level="debug" additivity="false">
+        <appender-ref ref="console"/>
+        <appender-ref ref="file"/>
+    </logger>
+
+</configuration>

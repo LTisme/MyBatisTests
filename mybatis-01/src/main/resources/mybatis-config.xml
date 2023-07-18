@@ -10,6 +10,11 @@
         <property name="password" value="Ts51102186"/>
     </properties>
 
+    <settings>
+        <setting name="logImpl" value="SLF4J"/>
+        <setting name="logPrefix" value="mybatis.sql."/>
+    </settings>
+
     <!--通过查看https://mybatis.org/dtd/mybatis-3-config.dtd文件，知道Alias别名要放在properties和settings后面-->
     <typeAliases>
         <!--别名系统，可以通过别名拿到具体的，用全限定名标识出的类（源码里你会发现别名是key，value是类）-->
