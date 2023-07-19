@@ -16,25 +16,12 @@ import java.util.Map;
 
 public interface UserMapper {
     /**
-     * 查询所有的用户
-     * @return List<User>
-     */
-    List<User> selectAll();
-
-    /**
-     * 查询相应 id 的用户
-     * @return User
-     */
-    User selectOne(int id);
-
-    /**
      * 如果不给参数加注解的抽象方法，并不能正确执行
      * 只有使用MyBatis的 @Param 给参数注释，才能正确执行
      * @param username
      * @param password
      * @return
      */
-//    User select(String username, String password);
     User select(@Param("username") String username, @Param("password") String password);
 
     /**
@@ -45,21 +32,6 @@ public interface UserMapper {
      */
     User selectByUser(User user);
 
-    /**
-     * 甚至我传入某种对象的集合都可以实现查询
-     * @param map
-     * @return
-     * @param <K>
-     * @param <V>
-     */
-    <K, V> User selectByMap(Map<K, V> map);
-
-    /**
-     * 模糊查询
-     * @param username
-     * @return
-     */
-    List<User> selectByUsername(String username);
 
     /**
      * 添加用户
@@ -67,6 +39,13 @@ public interface UserMapper {
      * @return int 插入的数量
      */
     int insert(User user);
+
+    /**
+     * 实现动态SQL批量插入
+     * @param users
+     * @return
+     */
+    int insertBatch(@Param("users") List<User> users);
 
     /**
      * 修改用户的值
@@ -81,4 +60,11 @@ public interface UserMapper {
      * @return
      */
     int delete(int id);
+
+    /**
+     * 输入多个id来删除用户，通过动态SQL来实现，如果不用@param注解的话，就会导致sql语句识别不出这个
+     * @param ids
+     * @return
+     */
+    int deleteByIds(@Param("ids") List<Integer> ids);
 }

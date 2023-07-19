@@ -48,28 +48,6 @@ public class TestMyBatis {
         }
     }
 
-    // MyBatis 提供了动态 Mapper 的方式来更好的执行sql语句
-    @Test
-    public void testMapper() {
-        try(SqlSession session = sqlSessionFactory.openSession()){
-            // 获得一个代理对象，使用的是JDK的Proxy类
-            UserMapper mapper = session.getMapper(UserMapper.class);
-            // 这个代理对象实现了被代理的接口的具体方法
-            List<User> users = mapper.selectAll();
-            log.debug("users is [{}]", users);
-        }
-    }
-
-    // MyBatis 提供了动态 Mapper 的方式来更好的执行sql语句
-    @Test
-    public void testMapperFindById() {
-        try(SqlSession session = sqlSessionFactory.openSession()){
-            UserMapper mapper = session.getMapper(UserMapper.class);
-            User user = mapper.selectOne(4);
-            log.debug("user is [{}]", user);
-        }
-    }
-
     @Test
     public void testMapperFindByMultiParam() {
         try(SqlSession session = sqlSessionFactory.openSession()){
@@ -91,31 +69,6 @@ public class TestMyBatis {
         }
     }
 
-    // 甚至传入一个对象集合，也能做到查询
-    @Test
-    public void testMapperFindByMap() {
-        try(SqlSession session = sqlSessionFactory.openSession()){
-            UserMapper mapper = session.getMapper(UserMapper.class);
-            Map<String, Object> map = new HashMap<>(2);
-            map.put("username", "xiaozhang");
-            map.put("password", "123456");
-            User user = mapper.selectByMap(map);
-
-            log.debug("user is [{}]", user);
-        }
-    }
-
-    // 进行username的模糊查询
-    @Test
-    public void testMapperFindByUsername() {
-        try(SqlSession session = sqlSessionFactory.openSession()){
-            UserMapper mapper = session.getMapper(UserMapper.class);
-            List<User> users = mapper.selectByUsername("xiao");
-
-            log.debug("users is [{}]", users);
-        }
-    }
-
     @Test
     public void testMapperInsert() {
         try(SqlSession session = sqlSessionFactory.openSession()){
@@ -134,13 +87,34 @@ public class TestMyBatis {
         }
     }
 
+    @Test
+    public void testMapperInsertBatch() {
+        try(SqlSession session = sqlSessionFactory.openSession()){
+            try {
+                UserMapper mapper = session.getMapper(UserMapper.class);
+                List<User> users = List.of(new User(null, "xiaobai", "123"),
+                        new User(null, "xiaoli", "1234"),
+                        new User(null, "xiaozhang", "12345"),
+                        new User(null, "xiaohuang", "123456"));
+                int affectedrows = mapper.insertBatch(users);
+                log.debug("Affected Rows are [{}]", affectedrows);
+                // 对数据库有变动的操作，必须要手动提交事务
+                session.commit();
+            } catch (Exception e){
+                log.error("发生了异常", e);
+                // 发生异常就回滚
+                session.rollback();
+            }
+        }
+    }
+
     // 如果不想用手动提交，则需要在openSession里将autocommit置为true
     @Test
     public void testMapperUpdate() {
         try(SqlSession session = sqlSessionFactory.openSession(true)) {
 
             UserMapper mapper = session.getMapper(UserMapper.class);
-            User user = new User(4, "xiaolan", "1111");
+            User user = new User(null, "xiaolan", "1111");
             int affectedrows = mapper.update(user);
 
             log.debug("Affected Rows are [{}]", affectedrows);
@@ -153,6 +127,17 @@ public class TestMyBatis {
 
             UserMapper mapper = session.getMapper(UserMapper.class);
             int affectedrows = mapper.delete(4);
+
+            log.debug("Affected Rows are [{}]", affectedrows);
+        }
+    }
+
+    @Test
+    public void testMapperDeleteByIds() {
+        try(SqlSession session = sqlSessionFactory.openSession(true)) {
+
+            UserMapper mapper = session.getMapper(UserMapper.class);
+            int affectedrows = mapper.deleteByIds(List.of(1,2,3,4,5));
 
             log.debug("Affected Rows are [{}]", affectedrows);
         }

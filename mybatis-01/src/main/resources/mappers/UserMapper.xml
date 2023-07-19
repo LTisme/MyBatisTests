@@ -15,60 +15,75 @@
         <result column="password" property="password"/>
     </resultMap>
 
-    <!--    <select id="select" resultType="org.example.entity.User">-->
-    <select id="selectAll" resultMap="UserResultMap">
-        select * from user
-    </select>
+    <!--这里就是sql代码块，用来替换一些重复性高的代码，下面就写一套标准的单表CRUD操作，分为单个操作和批量操作-->
+    <sql id="sql">
+        id, user_name, password
+    </sql>
 
-    <!--  MyBatis中， #{} 代表占位符（推荐使用，但比如模糊查询之类的场景则需要用${}了）-->
-    <!--  MyBatis中， ${} 作用是直接进行字符串替换-->
-    <select id="selectOne" resultMap="UserResultMap">
-        select * from user where id = #{id}
-    </select>
 
     <select id="select" resultMap="UserResultMap">
-        select * from user where username = #{username} and password = #{password}
+        select * from user where user_name = #{username} and password = #{password}
     </select>
-
-    <!--    <select id="selectByUser" resultMap="UserResultMap">-->
-    <!--        select * from user where username = #{username} and password = #{password}-->
-    <!--    </select>-->
 
     <!--这就是动态SQL，能根据前端传过来的参数来生成相应的sql的语句-->
     <select id="selectByUser" resultMap="UserResultMap">
-        select id, user_name, password from user <!--这是一个取巧的办法-->
+        select <include refid="sql"/> from user
         <where>
-            <if test="id != null">
-                and id = #{id}
-            </if>
-            <if test="username != null and username != ''">
-                and user_name = #{username}
-            </if>
-            <if test="password != null and password != ''">
-                and password = #{password}
-            </if>
+            <choose>
+                <when test="id != null">
+                    and id = #{id}
+                </when>
+                <when test="username != null and username != ''">
+                    and user_name = #{username}
+                </when>
+                <when test="password != null and password != ''">
+                    and password = #{password}
+                </when>
+            </choose>
         </where>
     </select>
 
-    <select id="selectByMap" resultMap="UserResultMap">
-        select * from user where username = #{username} and password = #{password}
-    </select>
-
-    <select id="selectByUsername" resultMap="UserResultMap">
-        <!--如果你用下面的这个语句，则会和mysql中的关键字冲突，导致直接把你mysql的用户名传进去，所以最好不要重复或者使用驼峰命名法-->
-        <!--select * from user where username like '%${username}%'-->
-        select * from user where username like '%${UserName}%'
-    </select>
-
     <insert id="insert" parameterType="org.example.entity.User">
-        insert into user(id, username, password) values(#{id}, #{username}, #{password})
+        insert into user(<include refid="sql"/>) values(#{id}, #{username}, #{password})
+    </insert>
+
+    <!--动态sql实现批量插入-->
+    <insert id="insertBatch">
+        insert into user(user_name, password) values
+        <foreach collection="users" item="user" separator=",">
+            (#{user.username}, #{user.password})
+        </foreach>
     </insert>
 
     <update id="update" parameterType="org.example.entity.User">
-        update user set username=#{username}, password=#{password} where id = #{id}
+        <!--        update user set username=#{username}, password=#{password} where id = #{id}-->
+        update user
+        <set>
+            <if test="username != null and username != ''">
+                user_name = #{username},
+            </if>
+            <if test="password != null and password != ''">
+                password = #{password},
+            </if>
+        </set>
+        <where>
+            <!--其实如果这里不传id，就会全给你改了，所以建议写死好一些，这样不写id会报错，不会造成实质性影响-->
+            <!--            <if test="id != null">-->
+            <!--                id = #{id}-->
+            <!--            </if>-->
+            id = #{id}
+        </where>
     </update>
 
     <delete id="delete">
         delete from user where id = #{id}
+    </delete>
+
+    <delete id="deleteByIds">
+        delete from user where id in
+        <!--将id集合称呼为ids，集合中每一个元素都称为id open是开始，close是结束-->
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
     </delete>
 </mapper>
