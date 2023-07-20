@@ -5,27 +5,22 @@
 <!--命名空间就是为了防止重复用的，你可以使用自定义的命名，也可以使用某个接口的全限定名称-->
 <mapper namespace="org.example.mapper.EmployeeMapper">
 
-    <!--映射关系-->
+    <!--复杂映射关系-->
     <resultMap id="EmployeeResultMap" type="org.example.entity.Employee">
-        <id column="id" property="id"/>
+        <id column="emp_id" property="id"/>
         <!--这里就是做了别名映射，让sql里的列名与java中的别名对应映射起来-->
-        <result column="name" property="employeeName"/>
+        <result column="emp_name" property="employeeName"/>
 
-        <!--使用association标签，把少的一方在多的一方中进行维护，比如Employee对象中就维护了一个Dept对象，这样就可以使用association标签-->
-        <!--这里的意思是，已经在Employee对象中维护了一个Dept对象，那么就可以拿着查询dept的结果作为子查询
-        然后employee关联了这个dept属性，关联的列名叫做dept_id，java类型就是这个关联对象的类型，select就是对象命名空间的select-->
-        <association property="dept" column="dept_id" javaType="org.example.entity.Dept"
-                     select="org.example.mapper.DeptMapper.select"/>
+        <!--直接去做封装，这就是结果嵌套，你当然可以注释掉association标签，但是这样结果中的employee就显示不出相应的dept了-->
+        <association property="dept" javaType="org.example.entity.Dept">
+            <id column="dep_id" property="id"/>
+            <result column="dep_name" property="deptName"/>
+        </association>
     </resultMap>
 
-    <!--这里就是sql代码块，用来替换一些重复性高的代码，下面就写一套标准的单表CRUD操作，分为单个操作和批量操作-->
-    <sql id="sql">
-        id, name, dept_id
-    </sql>
-
     <select id="select" resultMap="EmployeeResultMap">
-        select
-        <include refid="sql"/>
-        from employee
+        select emp.id emp_id, emp.name emp_name, dep.id dep_id, dep.name dep_name
+        from employee emp left join dept dep
+        on dep.id = emp.dept_id
     </select>
 </mapper>
