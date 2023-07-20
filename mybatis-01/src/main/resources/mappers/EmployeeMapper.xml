@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--命名空间就是为了防止重复用的，你可以使用自定义的命名，也可以使用某个接口的全限定名称-->
+<!--<mapper namespace="user">-->
+<mapper namespace="org.example.mapper.EmployeeMapper">
+
+    <!--映射关系-->
+    <resultMap id="EmployeeResultMap" type="org.example.entity.Employee">
+        <id column="id" property="id"/>
+        <!--这里就是做了别名映射，让sql里的列名与java中的别名对应映射起来-->
+        <result column="name" property="employeeName"/>
+        <result column="dept_id" property="deptId"/>
+        <result column="dname" property="deptName"/>
+    </resultMap>
+
+    <!--这里就是sql代码块，用来替换一些重复性高的代码，下面就写一套标准的单表CRUD操作，分为单个操作和批量操作-->
+    <sql id="sql">
+        id, name, dept_id
+    </sql>
+
+    <!--实现多表查询-->
+    <select id="select" resultMap="EmployeeResultMap">
+        <!--这里用了别名就需要在映射关系中配置-->
+        select emp.id, emp.name, emp.dept_id, dep.name dname
+        from employee emp
+        left join dept dep
+        on emp.dept_id = dep.id
+    </select>
+
+</mapper>

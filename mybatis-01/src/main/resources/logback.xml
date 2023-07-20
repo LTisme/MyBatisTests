@@ -20,7 +20,8 @@
         <file>${log_dir}/sql.log</file>
     </appender>
 
-    <root level="ALL">
+    <!--Info好一些，这样不会输出太冗杂的信息-->
+    <root level="INFO">
         <appender-ref ref="console"/>
     </root>
 
