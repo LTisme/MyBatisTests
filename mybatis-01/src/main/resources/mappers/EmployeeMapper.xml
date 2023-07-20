@@ -19,8 +19,6 @@
     </resultMap>
 
     <select id="select" resultMap="EmployeeResultMap">
-        select emp.id emp_id, emp.name emp_name, dep.id dep_id, dep.name dep_name
-        from employee emp left join dept dep
-        on dep.id = emp.dept_id
+        select id emp_id, name emp_name from employee where dept_id = #{dep_id}
     </select>
 </mapper>

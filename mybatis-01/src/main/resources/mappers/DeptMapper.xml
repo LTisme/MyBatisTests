@@ -7,11 +7,16 @@
     <!--映射关系-->
     <resultMap id="DeptResultMap" type="org.example.entity.Dept">
         <id column="id" property="id"/>
-        <!--这里就是做了别名映射，让sql里的列名与java中的别名对应映射起来-->
         <result column="name" property="deptName"/>
+
+        <collection property="employees" column="id" javaType="list" ofType="org.example.entity.Employee"
+                    select="org.example.mapper.EmployeeMapper.select">
+            <id column="emp_id" property="id"/>
+            <result column="emp_name" property="employeeName"/>
+        </collection>
     </resultMap>
 
     <select id="select" resultMap="DeptResultMap">
-        select id, name from dept where id = #{id}
+        select id, name from dept
     </select>
 </mapper>
