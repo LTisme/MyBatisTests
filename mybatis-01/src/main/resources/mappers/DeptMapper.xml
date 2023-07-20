@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--命名空间就是为了防止重复用的，你可以使用自定义的命名，也可以使用某个接口的全限定名称-->
+<mapper namespace="org.example.mapper.DeptMapper">
+    <!--映射关系-->
+    <resultMap id="DeptResultMap" type="org.example.entity.Dept">
+        <id column="id" property="id"/>
+        <!--这里就是做了别名映射，让sql里的列名与java中的别名对应映射起来-->
+        <result column="name" property="deptName"/>
+    </resultMap>
+
+    <select id="select" resultMap="DeptResultMap">
+        select id, name from dept where id = #{id}
+    </select>
+</mapper>

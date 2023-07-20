@@ -3,7 +3,6 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!--命名空间就是为了防止重复用的，你可以使用自定义的命名，也可以使用某个接口的全限定名称-->
-<!--<mapper namespace="user">-->
 <mapper namespace="org.example.mapper.EmployeeMapper">
 
     <!--映射关系-->
@@ -11,8 +10,12 @@
         <id column="id" property="id"/>
         <!--这里就是做了别名映射，让sql里的列名与java中的别名对应映射起来-->
         <result column="name" property="employeeName"/>
-        <result column="dept_id" property="deptId"/>
-        <result column="dname" property="deptName"/>
+
+        <!--使用association标签，把少的一方在多的一方中进行维护，比如Employee对象中就维护了一个Dept对象，这样就可以使用association标签-->
+        <!--这里的意思是，已经在Employee对象中维护了一个Dept对象，那么就可以拿着查询dept的结果作为子查询
+        然后employee关联了这个dept属性，关联的列名叫做dept_id，java类型就是这个关联对象的类型，select就是对象命名空间的select-->
+        <association property="dept" column="dept_id" javaType="org.example.entity.Dept"
+                     select="org.example.mapper.DeptMapper.select"/>
     </resultMap>
 
     <!--这里就是sql代码块，用来替换一些重复性高的代码，下面就写一套标准的单表CRUD操作，分为单个操作和批量操作-->
@@ -20,13 +23,9 @@
         id, name, dept_id
     </sql>
 
-    <!--实现多表查询-->
     <select id="select" resultMap="EmployeeResultMap">
-        <!--这里用了别名就需要在映射关系中配置-->
-        select emp.id, emp.name, emp.dept_id, dep.name dname
-        from employee emp
-        left join dept dep
-        on emp.dept_id = dep.id
+        select
+        <include refid="sql"/>
+        from employee
     </select>
-
 </mapper>

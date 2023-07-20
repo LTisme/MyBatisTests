@@ -19,6 +19,6 @@ public class Employee {
     private static final Long serialVersionUID = 1L;
     private Integer id;
     private String employeeName;
-    private String deptName;
-    private Integer deptId;
+    // 维护部门关系
+    private Dept dept;
 }
