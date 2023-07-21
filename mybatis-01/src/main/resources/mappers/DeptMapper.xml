@@ -4,19 +4,22 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!--命名空间就是为了防止重复用的，你可以使用自定义的命名，也可以使用某个接口的全限定名称-->
 <mapper namespace="org.example.mapper.DeptMapper">
-    <!--映射关系-->
     <resultMap id="DeptResultMap" type="org.example.entity.Dept">
-        <id column="id" property="id"/>
-        <result column="name" property="deptName"/>
+        <!--然后根据别名映射关系，将查询结果中的 dep_id dep_name 之类的别名赋值给 org.example.entity.Dept 的 id deptName-->
+        <id column="dep_id" property="id"/>
+        <result column="dep_name" property="deptName"/>
 
-        <collection property="employees" column="id" javaType="list" ofType="org.example.entity.Employee"
-                    select="org.example.mapper.EmployeeMapper.select">
+        <!--如果使用Collection结果嵌套的话，与查询嵌套不同的地方只是这里不需要select了-->
+        <collection property="employees" column="id" javaType="list" ofType="org.example.entity.Employee">
+            <!--然后根据别名映射关系，将查询结果中的 emp_id emp_name 之类的别名赋值给 org.example.entity.Employee 的 id employeeName-->
+            <!--然后你可以看出，这里的collection标签是被嵌套在了resultMap中-->
             <id column="emp_id" property="id"/>
             <result column="emp_name" property="employeeName"/>
         </collection>
     </resultMap>
 
     <select id="select" resultMap="DeptResultMap">
-        select id, name from dept
+        select d.id dep_id, d.name dep_name, e.id emp_id, e.name emp_name
+        from dept d left join employee e on d.id = e.dept_id
     </select>
 </mapper>
