@@ -13,6 +13,9 @@
     <settings>
         <setting name="logImpl" value="SLF4J"/>
         <setting name="logPrefix" value="mybatis.sql."/>
+        <!--懒加载配置-->
+        <setting name="lazyLoadingEnabled" value="true"/>
+        <setting name="aggressiveLazyLoading" value="false"/>
     </settings>
 
     <!--通过查看https://mybatis.org/dtd/mybatis-3-config.dtd文件，知道Alias别名要放在properties和settings后面-->

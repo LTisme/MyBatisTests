@@ -74,9 +74,11 @@ public class TestMyBatis {
         try(SqlSession session = sqlSessionFactory.openSession()){
             try {
                 UserMapper mapper = session.getMapper(UserMapper.class);
-                User user = new User(4, "xiaobai", "12121");
+                User user = new User(null, "xiaoqing", "12121");
                 int affectedrows = mapper.insert(user);
-                log.debug("Affected Rows are [{}]", affectedrows);
+                log.info("Affected Rows are [{}]", affectedrows);
+                // 如果不是用获取自增的属性的话，这里的id不会受影响
+                log.info("Affected Rows' id is [{}]", user.getId());
                 // 对数据库有变动的操作，必须要手动提交事务
                 session.commit();
             } catch (Exception e){
@@ -126,7 +128,7 @@ public class TestMyBatis {
         try(SqlSession session = sqlSessionFactory.openSession(true)) {
 
             UserMapper mapper = session.getMapper(UserMapper.class);
-            int affectedrows = mapper.delete(4);
+            int affectedrows = mapper.delete(8);
 
             log.debug("Affected Rows are [{}]", affectedrows);
         }
@@ -137,7 +139,7 @@ public class TestMyBatis {
         try(SqlSession session = sqlSessionFactory.openSession(true)) {
 
             UserMapper mapper = session.getMapper(UserMapper.class);
-            int affectedrows = mapper.deleteByIds(List.of(1,2,3,4,5));
+            int affectedrows = mapper.deleteByIds(List.of(5,6,7));
 
             log.debug("Affected Rows are [{}]", affectedrows);
         }

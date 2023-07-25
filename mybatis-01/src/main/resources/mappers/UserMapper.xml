@@ -43,7 +43,7 @@
         </where>
     </select>
 
-    <insert id="insert" parameterType="org.example.entity.User">
+    <insert id="insert" useGeneratedKeys="true" keyColumn="id" keyProperty="id" parameterType="org.example.entity.User">
         insert into user(<include refid="sql"/>) values(#{id}, #{username}, #{password})
     </insert>
 

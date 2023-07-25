@@ -19,6 +19,6 @@
     </resultMap>
 
     <select id="select" resultMap="EmployeeResultMap">
-        select id emp_id, name emp_name from employee where dept_id = #{dep_id}
+        select id emp_id, name emp_name from employee
     </select>
 </mapper>
