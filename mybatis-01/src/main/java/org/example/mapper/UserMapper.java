@@ -24,6 +24,8 @@ public interface UserMapper {
      */
     User select(@Param("username") String username, @Param("password") String password);
 
+    List<User> selectAll();
+
     /**
      * 那如果我只传入一个user对象，可以查询吗？
      * 可以的，因为MyBatis可以通过反射，获取相应的成员变量，然后将其赋值到对应Mapper中的占位符

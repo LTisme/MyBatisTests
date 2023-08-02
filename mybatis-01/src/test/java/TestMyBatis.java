@@ -42,9 +42,22 @@ public class TestMyBatis {
             // select 语句中的statement不是真实的sql语句，只是声明，具体的sql语句在 mybatis-config.xml 中的mapper.xml配置文件中已经声明好了
             // 比如下面这句话就是说，声明使用user命名空间的select标签的sql语句
 //            List<User> users = session.selectList("user.select");
-            List<User> users = session.selectList("selectAll");
+            List<User> users = session.selectList("org.example.mapper.UserMapper.select");
             log.debug("sqlSessionFactory is [{}]", users);
 
+        }
+    }
+
+    @Test
+    public void testMapperSelect() {
+        try(SqlSession session = sqlSessionFactory.openSession()){
+            UserMapper mapper = session.getMapper(UserMapper.class);
+            List<User> users = mapper.selectAll();
+            // 由于缓存机制的存在，就会发现，它不再去数据库去取数据了，而是把数据放置在一级缓存里面，这样就不用去数据层去取数据了
+            // 所以你不会再看到 Preparing: select * from user 了
+            List<User> users2 = mapper.selectAll();
+            log.info("Users are [{}]", users);
+            log.info("Users2 are [{}]", users2);
         }
     }
 

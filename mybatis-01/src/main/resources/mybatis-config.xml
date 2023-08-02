@@ -26,6 +26,13 @@
         <package name="org.example.entity"/>
     </typeAliases>
 
+    <!--配置了MyBatis的插件-->
+    <plugins>
+        <plugin interceptor="org.example.plugins.ExamplePlugin">
+            <property name="someProperty" value="100"/>
+        </plugin>
+    </plugins>
+
     <!--环境，也叫数据源-->
     <environments default="development">
         <environment id="development">

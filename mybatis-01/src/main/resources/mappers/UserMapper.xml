@@ -25,6 +25,10 @@
         select * from user where user_name = #{username} and password = #{password}
     </select>
 
+    <select id="selectAll" resultType="org.example.entity.User">
+        select * from user
+    </select>
+
     <!--这就是动态SQL，能根据前端传过来的参数来生成相应的sql的语句-->
     <select id="selectByUser" resultMap="UserResultMap">
         select <include refid="sql"/> from user
